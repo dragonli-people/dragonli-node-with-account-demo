@@ -28,6 +28,13 @@ user-db:
   username: root
   # 生产环境建议修改
   passwd: 123456
+account-db:
+  address: ${local-address}
+  db-name: account
+  # 生产环境建议修改
+  username: root
+  # 生产环境建议修改
+  passwd: 123456
 
 data-source-configs:
   db1:
@@ -64,6 +71,20 @@ data-source-configs:
       jdbc-url: jdbc:mysql://${user-db.address:127.0.0.1}:3306/${user-db.db-name}?useSSL=false&characterEncoding=utf8
       username: ${user-db.username}
       password: ${user-db.passwd}
+      driver-class-name: com.mysql.jdbc.Driver
+      hikari:
+        pool-name: HikariCP
+        auto-commit: false
+        connection-timeout: 5000
+        max-lifetime: 600000
+        maximum-pool-size: 50
+        minimum-idle: 5
+  account-db:
+    type: com.zaxxer.hikari.HikariDataSource
+    data-config:
+      jdbc-url: jdbc:mysql://${account-db.address:127.0.0.1}:3306/${account-db.db-name}?useSSL=false&characterEncoding=utf8
+      username: ${account-db.username}
+      password: ${account-db.passwd}
       driver-class-name: com.mysql.jdbc.Driver
       hikari:
         pool-name: HikariCP
