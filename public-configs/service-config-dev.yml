@@ -174,10 +174,26 @@ service:
       application-name: user-service
       protocol-name: dubbo
       protocol-port: ${MICRO_SERVICE_PORT:31004}
-      scan: org.dragonli.service.general.dubboconsumerservice.ConsumerService
+      scan: org.dragonli.service.module.user.UserService
       http-port: ${MICRO_SERVICE_HTTP_PORT:7004}
       netty-port: ${MICRO_SERVICE_NETTY_PORT:${default-dubbo-consumer-proxy-port}}
       telnet-port: ${MICRO_SERVICE_TELNET_PORT:51004}
+      group: ${MICRO_SERVICE_GROUP:}
+    account-change-service:
+      application-name: account-change-service
+      protocol-name: dubbo
+      protocol-port: ${MICRO_SERVICE_PORT:31005}
+      scan: org.dragonli.service.module.account.AccountChangeService
+      http-port: ${MICRO_SERVICE_HTTP_PORT:7005}
+      telnet-port: ${MICRO_SERVICE_TELNET_PORT:51005}
+      group: ${MICRO_SERVICE_GROUP:}
+    account-manager-service:
+      application-name: account-manager-service
+      protocol-name: dubbo
+      protocol-port: ${MICRO_SERVICE_PORT:31006}
+      scan: org.dragonli.service.module.account.AccountManagerService
+      http-port: ${MICRO_SERVICE_HTTP_PORT:7006}
+      telnet-port: ${MICRO_SERVICE_TELNET_PORT:51006}
       group: ${MICRO_SERVICE_GROUP:}
   node-service:
     dubbo-consumer-proxy-address: ${default-dubbo-consumer-proxy-address}
