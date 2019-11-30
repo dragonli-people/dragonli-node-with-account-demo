@@ -1,0 +1,164 @@
+
+local-address: 192.168.7.109
+zookeeper-address: ${local-address}
+redis-address: ${local-address}
+default-redis-port: 6379
+
+default-dubbo-consumer-proxy-port: 7089
+default-dubbo-consumer-proxy-address: ${local-address}:${default-dubbo-consumer-proxy-port}
+# 更多数据源可继续罗列
+db1:
+  address: ${local-address}
+  db-name: db1
+  # 生产环境建议修改
+  username: root
+  # 生产环境建议修改
+  passwd: 123456
+db2:
+  address: ${local-address}
+  db-name: db2
+  # 生产环境建议修改
+  username: root
+  # 生产环境建议修改
+  passwd: 123456
+user-db:
+  address: ${local-address}
+  db-name: user
+  # 生产环境建议修改
+  username: root
+  # 生产环境建议修改
+  passwd: 123456
+
+data-source-configs:
+  db1:
+    type: com.zaxxer.hikari.HikariDataSource
+    data-config:
+      jdbc-url: jdbc:mysql://${db1.address:127.0.0.1}:3306/${db1.db-name}?useSSL=false&characterEncoding=utf8
+      username: ${db1.username}
+      password: ${db1.passwd}
+      driver-class-name: com.mysql.jdbc.Driver
+      hikari:
+        pool-name: HikariCP
+        auto-commit: false
+        connection-timeout: 5000
+        max-lifetime: 600000
+        maximum-pool-size: 50
+        minimum-idle: 5
+  db2:
+    type: com.zaxxer.hikari.HikariDataSource
+    data-config:
+      jdbc-url: jdbc:mysql://${db2.address:127.0.0.1}:3306/${db2.db-name}?useSSL=false&characterEncoding=utf8
+      username: ${db2.username}
+      password: ${db2.passwd}
+      driver-class-name: com.mysql.jdbc.Driver
+      hikari:
+        pool-name: HikariCP
+        auto-commit: false
+        connection-timeout: 5000
+        max-lifetime: 600000
+        maximum-pool-size: 50
+        minimum-idle: 5
+  user-db:
+    type: com.zaxxer.hikari.HikariDataSource
+    data-config:
+      jdbc-url: jdbc:mysql://${user-db.address:127.0.0.1}:3306/${user-db.db-name}?useSSL=false&characterEncoding=utf8
+      username: ${user-db.username}
+      password: ${user-db.passwd}
+      driver-class-name: com.mysql.jdbc.Driver
+      hikari:
+        pool-name: HikariCP
+        auto-commit: false
+        connection-timeout: 5000
+        max-lifetime: 600000
+        maximum-pool-size: 50
+        minimum-idle: 5
+
+service:
+  general:
+    # 如果测试环境放置于云服务器（即ws服务期望通过外网ip访问），则打开下一行注释（去掉#），并将ip改成您的IP
+    #external-address:120.78.4.155
+    single-websocket-address: ${service.general.external-address:${local-address}}
+    default-websocket-port: 8101
+    redis-config:
+      # 配置模式: single, cluster, elasticcache:
+      mode: single
+      # Redis节点地址列表:
+      nodes:
+        - redis://${redis-address:127.0.0.1}:${default-redis-port}
+    lock-zookeeper-config:
+      zookeeperAddr: ${zookeeper-address:127.0.0.1}:2181
+      zkpTimeout: 10000
+    db-config:
+      redisKey: ${REDIS_KEY:}
+      defaultDbName: ${DEFAULT_DB_NAME:}
+      autoUpdateTableName: ${AUTO_UPDATE_TALBE_NAME:db_service_update}
+      primaryKey: ${PRIMARY_KEY:id}
+      versionKey: ${VERSION_KEY:version}
+      tableNameTag: ${TABLE_NAME_TAG:__TABLE_NAME}
+    data-source-type-suffix: type
+    data-source-config-suffix: data-config
+  micro-service:
+    common:
+      registry-address: zookeeper://${zookeeper-address:127.0.0.1}:2181
+    simple-other-service:
+      application-name: simple-other-service
+      protocol-name: dubbo
+      protocol-port: ${MICRO_SERVICE_PORT:31000}
+      scan: org.dragonli.service.general.other.OtherService
+      group: ${MICRO_SERVICE_GROUP:}
+      http-port: ${MICRO_SERVICE_HTTP_PORT:7000}
+      telnet-port: ${MICRO_SERVICE_TELNET_PORT:51000}
+      zookeeper-address: ${local-address:127.0.0.1}:2181
+      zookeeper-timeout: 3000
+      zookeeper-base-key: /service/datas/lock/base
+      lock-timeout: 1000
+      authTimeout: ${AUTH_TIME_OUT:315360000000}
+      authPrivatekey: ${AUTH_PRIVATE_KEY:draonli@2019}
+    simple-netty-service:
+      #效果相当于：192.168.7.109:8101;ws://192.168.7.109:8101
+      # 下行示例的是开发环境的配置方式。如果是生产环境的配置，建议直接配置内网站地址，如：
+        #your-local-address1:8101;wss://ws1.yourproject.domain.com:80 your-local-address2:8101;wss://ws2.yourproject.domain.com:80其中
+        # ws1.yourproject.domain.com和ws1.yourproject.domain.com均指向您的nginx地址，nginx识别80端口并分别反向代理至your-local-address1:8101和your-local-address2:8101
+        # wss的证书(即ssl证书）配置在nginx上即可
+        # nginx反射代理websocket协议的文献遍网皆是，此处不赘述
+      configsStr: ${NETTY_CONFIG_STR:${local-address}:${service.general.default-websocket-port};ws://${service.general.single-websocket-address}:${service.general.default-websocket-port}}
+      application-name: simple-netty-service
+      protocol-name: dubbo
+      protocol-port: ${MICRO_SERVICE_PORT:31001}
+      scan: org.dragonli.service.general.interfaces.general.WebSocketService
+      http-port: ${MICRO_SERVICE_HTTP_PORT:7001}
+      telnet-port: ${MICRO_SERVICE_TELNET_PORT:51001}
+      group: ${MICRO_SERVICE_GROUP:}
+      onlinePrefix: ${NETTY_ONLINE_ZOOKEEPER_PATH_PREFIX:/service/datas/websocket/online:}
+      redisonlineKey: /service/datas/websocket/online
+      privatekey: ${CONFIG_PRIVATE_KEY:draonli@2019}
+    simple-db-service:
+      application-name: simple-db-service
+      protocol-name: dubbo
+      protocol-port: ${MICRO_SERVICE_PORT:31002}
+      scan: org.dragonli.service.db.service.DbService
+      http-port: ${MICRO_SERVICE_HTTP_PORT:7002}
+      telnet-port: ${MICRO_SERVICE_TELNET_PORT:51002}
+      group: ${MICRO_SERVICE_GROUP:}
+    dubbo-consumer-proxy-service:
+      application-name: dubbo-consumer-proxy-service
+      protocol-name: dubbo
+      protocol-port: ${MICRO_SERVICE_PORT:31003}
+      scan: org.dragonli.service.general.dubboconsumerservice.ConsumerService
+      http-port: ${MICRO_SERVICE_HTTP_PORT:7003}
+      netty-port: ${MICRO_SERVICE_NETTY_PORT:${default-dubbo-consumer-proxy-port}}
+      telnet-port: ${MICRO_SERVICE_TELNET_PORT:51003}
+      group: ${MICRO_SERVICE_GROUP:}
+    user-service:
+      application-name: user-service
+      protocol-name: dubbo
+      protocol-port: ${MICRO_SERVICE_PORT:31004}
+      scan: org.dragonli.service.general.dubboconsumerservice.ConsumerService
+      http-port: ${MICRO_SERVICE_HTTP_PORT:7004}
+      netty-port: ${MICRO_SERVICE_NETTY_PORT:${default-dubbo-consumer-proxy-port}}
+      telnet-port: ${MICRO_SERVICE_TELNET_PORT:51004}
+      group: ${MICRO_SERVICE_GROUP:}
+  node-service:
+    dubbo-consumer-proxy-address: ${default-dubbo-consumer-proxy-address}
+    redis-host: ${redis-address:127.0.0.1}
+    redis-port: ${default-redis-port}
