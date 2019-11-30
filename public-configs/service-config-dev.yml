@@ -118,6 +118,14 @@ service:
       tableNameTag: ${TABLE_NAME_TAG:__TABLE_NAME}
     data-source-type-suffix: type
     data-source-config-suffix: data-config
+  module:
+    account:
+      redis-config:
+        # 配置模式: single, cluster, elasticcache:
+        mode: single
+        # Redis节点地址列表:
+        nodes:
+          - redis://${redis-address:127.0.0.1}:${default-redis-port}
   micro-service:
     common:
       registry-address: zookeeper://${zookeeper-address:127.0.0.1}:2181
