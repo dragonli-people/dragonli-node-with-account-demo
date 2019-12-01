@@ -178,6 +178,7 @@ service:
       netty-port: ${MICRO_SERVICE_NETTY_PORT:${default-dubbo-consumer-proxy-port}}
       telnet-port: ${MICRO_SERVICE_TELNET_PORT:51003}
       group: ${MICRO_SERVICE_GROUP:}
+      account-group: +8
     user-service:
       application-name: user-service
       protocol-name: dubbo
