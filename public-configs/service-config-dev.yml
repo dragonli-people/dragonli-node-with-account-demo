@@ -214,5 +214,6 @@ service:
       group: ${MICRO_SERVICE_GROUP:}
   node-service:
     dubbo-consumer-proxy-address: ${default-dubbo-consumer-proxy-address}
+    http-port: 3003
     redis-host: ${redis-address:127.0.0.1}
     redis-port: ${default-redis-port}
