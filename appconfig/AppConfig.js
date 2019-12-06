@@ -13,7 +13,7 @@
 // const GeneralErrorAdvice = require('../advices/GeneralErrorAdvice');
 // const GeneralResultFormatAdvice = require('../advices/GeneralResultFormatAdvice');
 
-const {AppConfig} = require('dragonli-node-with-account-service-core');
+const {AppConfig} = require('dragonli-node-with-user-account-service-core');
 
 module.exports = class extends AppConfig {
     constructor(){

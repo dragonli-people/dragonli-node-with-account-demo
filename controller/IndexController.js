@@ -1,5 +1,7 @@
 module.exports = class {
     async index(){
-        return {};
+        this.paras.message = this.paras.message || '';
+        this.paras.user = this.user;
+        return this.paras;
     }
 }

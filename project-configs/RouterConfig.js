@@ -1,14 +1,17 @@
 const IndexController = require('../controller/IndexController');
+const AccountController = require('../controller/AccountController');
+const UserController = require('../controller/UserController');
 
 module.exports = [
-    {url:'/',clz:IndexController,method:'index'},
-    // {url:'/viewUser',clz:Controller1,method:'viewUser'},
-    // {url:'/clearUser',clz:Controller1,method:'clearUser'},
-    // {url:'/testSetUser',clz:Controller1,method:'testSetUser'},
-    // {url:'/errWithCode',clz:Controller1,method:'errWithCode'},
-    // {url:'/generalError',clz:Controller1,method:'generalError'},
-    // {url:'/testRole',clz:Controller1,method:'testRole',roles:'ADMIN'},
-    // {url:'/join1',clz:Controller1,method:'join1'},
-    // {url:'/join2',clz:Controller1,method:'join2'},
+    {url:'/',clz:IndexController,method:'index',template:'index.ejs'},
+    {url:'/login/index',clz:IndexController,method:'index',template:'login.ejs'},
+    {url:'/regist/index',clz:IndexController,method:'index',template:'regist.ejs'},
+    {url:'/pay/index',clz:IndexController,method:'index',template:'pay.ejs',roles:'USER'},
+    {url:'/adjustment/index',clz:IndexController,method:'index',template:'adjustment.ejs'},
+    {url:'/login/go',clz:UserController,method:'login',template:'index.ejs'},
+    {url:'/regist/go',clz:UserController,method:'regist',template:'index.ejs'},
+    {url:'/pay/go',clz:AccountController,method:'pay',roles:'USER'},
+    {url:'/adjustment/go',clz:AccountController,method:'adjustment'},
+
 ];
 
