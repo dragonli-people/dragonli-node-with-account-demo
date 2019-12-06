@@ -9,17 +9,19 @@ module.exports = class {
 
         var uuid = UUID.v1();
         var orderId = `pay-test-demo-${uuid}`;
-        await this.accountService.payment(this.user.id, reflexId || '', 'GENERAL_RECEIVE', (-Number(amount))+'', 'CNY', orderId,
-            "pay-to-user-demo-test", false);
-        var result = null;
-        for (var i = 0; i < 100; i++) {
-            await this.sleep(32);
-            var {status} = await this.accountService.paymentStatus(orderId);
-            if (status === 'SUCCESS' || status === 'FAILED') {
-                result = status;
-                break;
-            }
-        }
+        var result = await this.accountService.paymentAndWaitResult(this.user.id, reflexId || ''
+            , 'GENERAL_RECEIVE', (-Number(amount))+'', 'CNY', orderId, "pay-to-user-demo-test");
+        // await this.accountService.payment(this.user.id, reflexId || '', 'GENERAL_RECEIVE', (-Number(amount))+'', 'CNY', orderId,
+        //     "pay-to-user-demo-test", false);
+        // var result = null;
+        // for (var i = 0; i < 100; i++) {
+        //     await this.sleep(32);
+        //     var {status} = await this.accountService.paymentStatus(orderId);
+        //     if (status === 'SUCCESS' || status === 'FAILED') {
+        //         result = status;
+        //         break;
+        //     }
+        // }
         this.response.redirect(302, `/?message=${encodeURI('pay orderId:' + orderId + ', result is :' + result)}`);
         return null;
     }
@@ -35,17 +37,19 @@ module.exports = class {
         this.assert(user, 1, 'username cant be find!');
         var uuid = UUID.v1();
         var orderId = `adj-test-demo-${uuid}`;
-        await this.accountService.accountAdjustment(orderId, user.id, reflexId || '', 'CNY', amount,
-            "adjustment-to-user-demo-test");
-        var result = null;
-        for (var i = 0; i < 100; i++) {
-            await this.sleep(32);
-            var {status} = await this.accountService.adjustmentStatus(orderId);
-            if (status === 'SUCCESS' || status === 'FAILED') {
-                result = status;
-                break;
-            }
-        }
+        var result = this.accountService.adjustmentAndWaitResult(orderId, user.id, reflexId || ''
+            , 'CNY', amount, "adjustment-to-user-demo-test");
+        // await this.accountService.accountAdjustment(orderId, user.id, reflexId || '', 'CNY', amount,
+        //     "adjustment-to-user-demo-test");
+        // var result = null;
+        // for (var i = 0; i < 100; i++) {
+        //     await this.sleep(32);
+        //     var {status} = await this.accountService.adjustmentStatus(orderId);
+        //     if (status === 'SUCCESS' || status === 'FAILED') {
+        //         result = status;
+        //         break;
+        //     }
+        // }
         this.response.redirect(302, `/?message=${encodeURI('adjustment orderId:' + orderId + ', result is :' + result)}`);
         return null;
     }
