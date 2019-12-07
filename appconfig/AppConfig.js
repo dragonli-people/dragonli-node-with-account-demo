@@ -18,5 +18,7 @@ const {AppConfig} = require('dragonli-node-with-user-account-service-core');
 module.exports = class extends AppConfig {
     constructor(){
         super();
+        // service.module.user.admin-name
+        // service.module.user.admin-general-reflex-id
     }
 }

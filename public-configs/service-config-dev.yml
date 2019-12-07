@@ -119,6 +119,9 @@ service:
     data-source-type-suffix: type
     data-source-config-suffix: data-config
   module:
+    user:
+      admin-name: admin
+      admin-general-reflex-id: GENERAL_RECEIVE
     account:
       redis-config:
         host: ${redis-address:127.0.0.1}
