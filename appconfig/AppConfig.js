@@ -18,6 +18,10 @@ const {AppConfig} = require('dragonli-node-with-user-account-service-core');
 module.exports = class extends AppConfig {
     constructor(){
         super();
+        this.addControllerAutoConfigKey([
+            'service.module.user.admin-name:adminName',
+            'service.module.user.admin-general-reflex-id:adminReflexId',
+        ]);
         // service.module.user.admin-name
         // service.module.user.admin-general-reflex-id
     }
