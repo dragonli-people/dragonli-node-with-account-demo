@@ -14,9 +14,9 @@ from now on we will Using ${ip} to refer to IP of virtual machine,and ${your-hos
 
 step 3:
 cd ~
-sh setup.sh ${ip} ${your-host-name}
+sh setup.sh ${your-host-name} ${ip}
 reboot
-(login when vm had started )
+(you need login at least once after vm had restarted )
 
 step 4:
 now,use your dev machine , such as your Notebook computer
@@ -39,6 +39,8 @@ step 5:
 http://${ip}:8080
 username: admin
 passwd: dragonli
+
+find item "Jenkins Location->Jenkins URL"，set value be : http:///${ip}:8080/
 
 http://${ip}:8080/view/dragonli-demo-simple-dev/job/dragonli-demo-simple-config/configure
 modify Repository URL to the git address of your project , and click save.
